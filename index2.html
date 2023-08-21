@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f3f3f3;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 2px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+
+        .cell:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="board"></div>
+    <script>
+        const board = document.getElementById("board");
+        const cells = [];
+        let currentPlayer = "X";
+
+        // Create cells and add click event listeners
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.addEventListener("click", () => makeMove(i));
+            cells.push(cell);
+            board.appendChild(cell);
+        }
+
+        // Function to make a move
+        function makeMove(index) {
+            if (cells[index].textContent === "") {
+                cells[index].textContent = currentPlayer;
+                cells[index].classList.add(currentPlayer);
+                checkWin();
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+            }
+        }
+
+        // Function to check for a win
+        function checkWin() {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    cells[a].classList.add("winner");
+                    cells[b].classList.add("winner");
+                    cells[c].classList.add("winner");
+                    setTimeout(() => {
+                        alert(`Player ${cells[a].textContent} wins!`);
+                        resetBoard();
+                    }, 100);
+                    return;
+                }
+            }
+
+            // Check for a draw
+            if ([...cells].every(cell => cell.textContent !== "")) {
+                setTimeout(() => {
+                    alert("It's a draw!");
+                    resetBoard();
+                }, 100);
+            }
+        }
+
+        // Function to reset the board
+        function resetBoard() {
+            cells.forEach(cell => {
+                cell.textContent = "";
+                cell.classList.remove("X", "O", "winner");
+            });
+            currentPlayer = "X";
+        }
+    </script>
+</body>
+
+</html>
